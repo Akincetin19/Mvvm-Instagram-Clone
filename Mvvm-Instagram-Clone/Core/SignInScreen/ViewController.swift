@@ -18,21 +18,24 @@ protocol ViewControllerInterface: AnyObject {
     func handleWithError(error: Error)
     func handleWithAuthDataResult()
     func makeAlert(error: Error)
+    func configureLogInButton()
 }
 
 class ViewController: UIViewController {
 
-    var selectImageButton: UIButton!
-    var emailTextField: UITextField!
-    var passwordTextField: UITextField!
-    var userNameTextField: UITextField!
-    var signInButton: UIButton!
-    let viewModel = SignInViewModel()
-    var hud = JGProgressHUD(style: .light)
+    private var selectImageButton: UIButton!
+    private var emailTextField: UITextField!
+    private var passwordTextField: UITextField!
+    private var userNameTextField: UITextField!
+    private var signInButton: UIButton!
+    private var logInButton: UIButton!
+    private let viewModel = SignInViewModel()
+    private var hud = JGProgressHUD(style: .light)
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         viewModel.view = self
         viewModel.viewDidLoad()
     }
@@ -91,18 +94,26 @@ extension ViewController: ViewControllerInterface {
         makeAlert(error: error)
     }
     func handleWithAuthDataResult() {
+        
         hud.dismiss(animated: true)
         emailTextField.text = ""
         userNameTextField.text = ""
         passwordTextField.text = ""
+        navigationController?.popViewController(animated: true)
         
     }
     func makeAlert(error: Error) {
-        let dialogMessage = UIAlertController(title: "Hata", message: error.localizedDescription, preferredStyle: .alert)
-        let ok = UIAlertAction(title: "Tamam", style: .default)
-        dialogMessage.addAction(ok)
-        self.present(dialogMessage, animated: true, completion: nil)
+        self.makeAlert(view: self,error: error)
     }
+    func configureLogInButton() {
+        logInButton = UIButton(type: .system)
+        logInButton.setTitle("Hesabın Var Mı? Giriş Yap", for: .normal)
+        logInButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        view.addSubview(logInButton)
+        logInButton.anchor(top: nil, bottom: view.safeAreaLayoutGuide.bottomAnchor, leading: view.leadingAnchor, trailing: view.trailingAnchor, height: 50, width: 0, paddingTop: 0, paddingLeft: 20, paddingRight: -20, paddingBottom: 0)
+        logInButton.addTarget(self, action: #selector(runLogInScreen), for: .touchUpInside)
+    }
+    
 }
 extension ViewController {
     @objc private func signInButtonClicked() {
@@ -114,6 +125,9 @@ extension ViewController {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         present(imagePickerController, animated: true, completion: nil)
+    }
+    @objc private func runLogInScreen() {
+        navigationController?.popViewController(animated: true)
     }
 }
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

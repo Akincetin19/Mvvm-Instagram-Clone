@@ -25,6 +25,7 @@ extension SignInViewModel: SignInViewModelProtocol {
         view?.configurePasswordField()
         view?.configureSignInButton()
         view?.configureStackView()
+        view?.configureLogInButton()
     }
     func signInClicked(email: String, password: String, username: String, userProfilPicture: UIImageView) {
         authService.createUser(email: email, password: password, username: username, userProfilPicture: userProfilPicture) { result in
@@ -34,7 +35,6 @@ extension SignInViewModel: SignInViewModelProtocol {
             case.success(_):
                 self.view?.handleWithAuthDataResult()
             }
-            
         }
     }
 }

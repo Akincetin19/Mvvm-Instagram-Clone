@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct User {
+    var userID: String!
+    var userName: String!
+    var profilePictureUrl: String!
+}
