@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Photos
 
 protocol AddPhotoControllerInterface: AnyObject {
     func registerCollectionView()
     func addButtons()
+    func getPhotos()
 }
 
 class AddPhotoController: UICollectionViewController {
@@ -18,6 +20,7 @@ class AddPhotoController: UICollectionViewController {
         super.viewDidLoad()
         registerCollectionView()
         addButtons()
+        getPhotos()
     }
     
 }
@@ -70,6 +73,24 @@ extension AddPhotoController : UICollectionViewDelegateFlowLayout {
 }
 
 extension AddPhotoController: AddPhotoControllerInterface {
+    func getPhotos() {
+        let getirmeSecenekleri = PHFetchOptions()
+        getirmeSecenekleri.fetchLimit = 10
+        let images = PHAsset.fetchAssets(with: .image, options: getirmeSecenekleri)
+        images.enumerateObjects { asset, number, stopPoint in
+            
+            let imageManager = PHImageManager()
+            let imageSize = CGSize(width: 400, height: 400)
+            let options = PHImageRequestOptions()
+            options.isSynchronous = true
+            imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFit, options: options) { image, infoOfImage in
+                
+                //viewModel Oluştur
+            }
+            
+        }
+        
+    }
     func registerCollectionView() {
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cellId")
         collectionView.register(UICollectionViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerId")
